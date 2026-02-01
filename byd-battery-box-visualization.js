@@ -1075,24 +1075,59 @@ BYDModuleComponent.prototype._renderMinimalView = function(e) {
       : `${Math.round(value)} mV`;
   };
 
-  // Render minimal layout
+  // Get axis range for current view
+  let axis = this._getAxis();
+  let rangeMin = axis.min;
+  let rangeMax = axis.max;
+
+  // Helper to create meaningful gradient based on value position
+  let createBarGradient = (value) => {
+    // Calculate percentage where value falls in the range (0-100)
+    let percentage = rangeMax === rangeMin ? 50 :
+                     Math.max(0, Math.min(100,
+                       ((value - rangeMin) / (rangeMax - rangeMin)) * 100));
+
+    // Choose color based on where value falls in spectrum
+    let color, startColor, endColor;
+    if (percentage >= 70) {
+      // High values - green (good)
+      color = "#2e7d32";
+      startColor = "#000000";
+      endColor = "rgba(46,125,50,0.25)";
+    } else if (percentage >= 40) {
+      // Medium values - blue (normal)
+      color = "#1976d2";
+      startColor = "#000000";
+      endColor = "rgba(25,118,210,0.25)";
+    } else {
+      // Low values - red (warning/critical)
+      color = "#d32f2f";
+      startColor = "#000000";
+      endColor = "rgba(211,47,47,0.25)";
+    }
+
+    // Create gradient that fills up to this percentage
+    return `linear-gradient(to right, ${startColor} 0%, ${color} 1px, ${color} ${Math.max(1, percentage - 1)}%, ${endColor} ${percentage + 1}%, rgba(255,255,255,0.1) ${percentage + 1}%)`;
+  };
+
+  // Render minimal layout with meaningful gradient bars
   e.innerHTML = `
     <div class="battery-module minimal">
       <div class="mini">
         <div class="mini-row">
           <div class="mini-label">Max</div>
           <div class="mini-stat">${formatStat(max)}</div>
-          <div class="hbar" style="background: linear-gradient(to right, #2e7d32 0%, #2e7d32 100%); height: 20px; border-radius: 6px;"></div>
+          <div class="hbar" style="background: ${createBarGradient(max)}; height: 20px; border-radius: 6px;"></div>
         </div>
         <div class="mini-row">
           <div class="mini-label">Median</div>
           <div class="mini-stat">${formatStat(median)}</div>
-          <div class="hbar" style="background: linear-gradient(to right, #1976d2 0%, #1976d2 100%); height: 20px; border-radius: 6px;"></div>
+          <div class="hbar" style="background: ${createBarGradient(median)}; height: 20px; border-radius: 6px;"></div>
         </div>
         <div class="mini-row">
           <div class="mini-label">Min</div>
           <div class="mini-stat">${formatStat(min)}</div>
-          <div class="hbar" style="background: linear-gradient(to right, #d32f2f 0%, #d32f2f 100%); height: 20px; border-radius: 6px;"></div>
+          <div class="hbar" style="background: ${createBarGradient(min)}; height: 20px; border-radius: 6px;"></div>
         </div>
       </div>
       <div class="module-name">${this._name || ""}</div>
