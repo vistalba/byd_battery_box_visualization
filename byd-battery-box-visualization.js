@@ -1055,26 +1055,71 @@ BYDModuleComponent.prototype._getAxis = function() {
 // BYD BATTERY MODULE - RENDER MINIMAL VIEW
 // ============================================================================
 
+BYDModuleComponent.prototype._renderMinimalView = function(e) {
+  let isTemperature = this._view === "temperature";
+  let data = isTemperature ? this._temp : this._voltage;
+
+  // Calculate statistics
+  let allValues = getValidNumbers(data.flat());
+  let max = Math.max(...allValues, 0);
+  let min = Math.min(...allValues, 0);
+  let avg = allValues.length ? allValues.reduce((a, b) => a + b, 0) / allValues.length : 0;
+  let median = getMedian(allValues);
+
+  let formatStat = (value) => {
+    if (isTemperature) {
+      return `${formatNumber(value, 1)} °C`;
+    }
+    return this._displayUnit === "V"
+      ? `${(value / 1000).toLocaleString(void 0, { minimumFractionDigits: 3, maximumFractionDigits: 3 })} V`
+      : `${Math.round(value)} mV`;
+  };
+
+  // Render minimal layout
+  e.innerHTML = `
+    <div class="battery-module minimal">
+      <div class="mini">
+        <div class="mini-row">
+          <div class="mini-label">Max</div>
+          <div class="mini-stat">${formatStat(max)}</div>
+          <div class="hbar" style="background: linear-gradient(to right, #2e7d32 0%, #2e7d32 100%); height: 20px; border-radius: 6px;"></div>
+        </div>
+        <div class="mini-row">
+          <div class="mini-label">Median</div>
+          <div class="mini-stat">${formatStat(median)}</div>
+          <div class="hbar" style="background: linear-gradient(to right, #1976d2 0%, #1976d2 100%); height: 20px; border-radius: 6px;"></div>
+        </div>
+        <div class="mini-row">
+          <div class="mini-label">Min</div>
+          <div class="mini-stat">${formatStat(min)}</div>
+          <div class="hbar" style="background: linear-gradient(to right, #d32f2f 0%, #d32f2f 100%); height: 20px; border-radius: 6px;"></div>
+        </div>
+      </div>
+      <div class="module-name">${this._name || ""}</div>
+    </div>
+  `;
+};
+
 // ============================================================================
 // BYD BATTERY MODULE - MAIN RENDER LOGIC
 // ============================================================================
 
 BYDModuleComponent.prototype._render = function() {
-  let e = this.shadowRoot;
-  if (!e) return;
-  
-  // FIX: Cleanup vor neuem Render
-  this._cleanupListeners();
-  this._cleanupTooltip();
-  
-  let axis = this._getAxis();
-  let isTemperature = this._view === "temperature";
-  
-  // Minimal View
-  if (this._moduleView === "minimal") {
-    this._renderMinimalView(e);
-    return;
-  }
+    let e = this.shadowRoot;
+    if (!e) return;
+
+    // FIX: Cleanup vor neuem Render
+    this._cleanupListeners();
+    this._cleanupTooltip();
+
+    let axis = this._getAxis();
+    let isTemperature = this._view === "temperature";
+
+    // Minimal View
+    if (this._moduleView === "minimal") {
+      this._renderMinimalView(e);
+      return;
+    }
   
   // No Data View
   if (this._moduleView === "none") {
