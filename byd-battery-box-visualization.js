@@ -1059,7 +1059,7 @@ BYDModuleComponent.prototype._renderMinimalView = function(e) {
   let isTemperature = this._view === "temperature";
   let data = isTemperature ? this._temp : this._voltage;
 
-  // Calculate statistics
+  // Calculate statistics - FIXED min calculation
   let allValues = getValidNumbers(data.flat());
   let max = allValues.length > 0 ? Math.max(...allValues) : 0;
   let min = allValues.length > 0 ? Math.min(...allValues) : 0;
@@ -1075,64 +1075,65 @@ BYDModuleComponent.prototype._renderMinimalView = function(e) {
       : `${Math.round(value)} mV`;
   };
 
-  // Get axis range for current view
-  let axis = this._getAxis();
-  let rangeMin = axis.min;
-  let rangeMax = axis.max;
+  // Restore original segmented bar logic with proper calculations
+  if (this._moduleView === "minimal") {
+    let r = this._voltage.filter(d => Number.isFinite(Number(d))).map(Number),
+        M = this._temp.filter(d => Number.isFinite(Number(d))).map(Number),
+        l = d => {
+      if (!d.length) return 0;
+      let y = [...d].sort((k, P) => k - P), x = Math.floor(y.length / 2);
+      return y.length % 2 ? y[x] : (y[x - 1] + y[x]) / 2
+    }, _ = l(r), u = l(this._histMin.filter(d => Number.isFinite(Number(d))).map(Number)),
+        V = l(this._histMax.filter(d => Number.isFinite(Number(d))).map(Number)),
+        S = l(M), c = d => this._chart.vMin === this._chart.vMax ? 0 : Math.min(this._chart.vMax, Math.max(this._chart.vMin, Number(d))) - this._chart.vMin,
+        h = d => this._chart.tMin === this._chart.tMax ? 0 : Math.min(this._chart.tMax, Math.max(this._chart.tMin, Number(d))) - this._chart.tMin,
+        o = 0;
 
-  // Helper to create meaningful gradient based on value position
-  let createBarGradient = (value) => {
-    // Calculate percentage where value falls in the range (0-100)
-    let percentage = rangeMax === rangeMin ? 50 :
-                     Math.max(0, Math.min(100,
-                       ((value - rangeMin) / (rangeMax - rangeMin)) * 100));
+    Math.max(0, _ - u) < 20 && (o = 150);
 
-    // Choose color based on where value falls in spectrum
-    let color, startColor, endColor;
-    if (percentage >= 70) {
-      // High values - green (good)
-      color = "#2e7d32";
-      startColor = "#000000";
-      endColor = "rgba(46,125,50,0.25)";
-    } else if (percentage >= 40) {
-      // Medium values - blue (normal)
-      color = "#1976d2";
-      startColor = "#000000";
-      endColor = "rgba(25,118,210,0.25)";
-    } else {
-      // Low values - red (warning/critical)
-      color = "#d32f2f";
-      startColor = "#000000";
-      endColor = "rgba(211,47,47,0.25)";
-    }
+    let E = d => isTemperature ? `${Number(d).toLocaleString(void 0, { maximumFractionDigits: 1 })} °C` :
+                  this._displayUnit === "V" ? `${(Number(d) / 1000).toLocaleString(void 0, { minimumFractionDigits: 3, maximumFractionDigits: 3 })} V` :
+                  `${Math.round(Number(d))} mV`,
+        N = Math.max(0, c(u) - o), m = c(_), p = Math.max(0, m - N), T = N + p / 2;
 
-    // Create gradient that fills up to this percentage
-    return `linear-gradient(to right, ${startColor} 0%, ${color} 1px, ${color} ${Math.max(1, percentage - 1)}%, ${endColor} ${percentage + 1}%, rgba(255,255,255,0.1) ${percentage + 1}%)`;
-  };
-
-  // Render minimal layout with meaningful gradient bars
-  e.innerHTML = `
-    <div class="battery-module minimal">
-      <div class="mini">
-        <div class="mini-row">
-          <div class="mini-label">Max</div>
-          <div class="mini-stat">${formatStat(max)}</div>
-          <div class="hbar" style="background: ${createBarGradient(max)}; height: 20px; border-radius: 6px;"></div>
+    e.innerHTML = `
+      <div class="battery-module minimal no-axis">
+        <div class="mini">
+          <div class="mini-row">
+            <div class="mini-label">Voltage</div>
+            <div class="hbar">
+              <div class="hseg ${this._balancing?.some(d => d === 1 || d === !0) ? "bluecap" : "greencap"}" style="left:0;width:${Math.max(0, c(u))}%;"></div>
+              <div class="hseg cur${this._balancing?.some(d => d === 1 || d === !0) ? " bal" : ""}" style="left:${N}%;width:${p}%;"></div>
+              ${this._showGrayCaps ? `<div class="hseg max" style="left:${m}%;width:${Math.max(0, c(V) - m)}%"></div>` : ""}
+              <div class="hnum" style="left:${T}%; color:#fff;">${E(_)}</div>
+            </div>
+          </div>
+          <div class="mini-row">
+            <div class="mini-label">Temperature</div>
+            <div class="hbar">
+              <div class="hseg cur" style="left:0;width:${Math.max(0, h(S))}%;"></div>
+              <div class="hnum" style="left:${Math.max(0, h(S)) / 2}%; color:#fff;">${Number(S).toLocaleString(void 0, { maximumFractionDigits: 1 })} °C</div>
+            </div>
+          </div>
+          <div class="mini-row">
+            <div class="mini-label">Cell Balancing</div>
+            <div class="mini-stat">${(this._balancing || []).filter(d => d === 1 || d === !0).length}</div>
+          </div>
         </div>
-        <div class="mini-row">
-          <div class="mini-label">Median</div>
-          <div class="mini-stat">${formatStat(median)}</div>
-          <div class="hbar" style="background: ${createBarGradient(median)}; height: 20px; border-radius: 6px;"></div>
-        </div>
-        <div class="mini-row">
-          <div class="mini-label">Min</div>
-          <div class="mini-stat">${formatStat(min)}</div>
-          <div class="hbar" style="background: ${createBarGradient(min)}; height: 20px; border-radius: 6px;"></div>
-        </div>
+        <div class="module-name">${this._name || ""}</div>
       </div>
-      <div class="module-name">${this._name || ""}</div>
-    </div>
-  `;
+    `;
+    return;
+  }
+
+  // Render detailed or none view
+  if (this._moduleView === "none") {
+    e.innerHTML = `
+      <div class="battery-module nodata no-axis">
+        <div class="module-name">${this._name || ""}</div>
+      </div>`;
+    return;
+  }
 };
 
 // ============================================================================
