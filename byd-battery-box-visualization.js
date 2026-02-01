@@ -1,9 +1,8 @@
-// BYD Battery Box Visualization v0.0.6
-// Fully refactored for memory leak prevention and performance optimization
-// Preserves all functionality, UI layout, and data history tracking
+/* BYD Battery Box Visualization v0.0.6 
+*/
 
 // ============================================================================
-// CONSTANTS - Central Configuration
+// CONSTANTS - Zentrale Konfiguration
 // ============================================================================
 const BYD_CONFIG = {
   VERSION: '0.0.6',
@@ -32,14 +31,14 @@ try {
     ":host{box-sizing:border-box;font-family:var(--ha-card-header-font-family,Roboto,system-ui,Arial)}*{box-sizing:border-box}.battery-tower{display:flex;flex-direction:column;gap:4px;min-width:220px;width:100%;max-width:none;margin:0 auto}.header{position:relative;display:flex;flex-direction:column;gap:6px;background:linear-gradient(180deg,#585858, #383838);border-radius:10px;padding:8px 12px;color:#fff;box-shadow:inset 0 1px 2px rgba(255,255,255,.08), inset 0 -1px 2px rgba(0,0,0,.45)}.header .row.top{display:flex;align-items:center;gap:10px}.header .logo{position:relative;border:2px solid #ff3b3b;color:#ff3b3b;border-radius:999px;font-weight:700;padding:2px 8px;font-size:12px;width:90px}.header .logo.nobrandInformation{width:auto}.header .logo .brandname{color:#ff3b3b;float:left;margin-right:4px}.header .capacity{font-size:8px;line-height:1.2;color:#e0e0e0;margin-left:auto}.header .productname{font-size:8px;font-weight:bold;line-height:1.2;color:#e0e0e0;margin-left:auto}.header .soc-row{display:flex}.header .soc{position:relative;flex:1;height:14px;border-radius:8px;background:rgba(0,0,0,.35);overflow:hidden}.header .soc .fill{position:absolute;left:0;top:0;bottom:0;background:#2e7d32;min-width:0;border-radius:8px}.header .soc .label{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-weight:700;font-size:12px;text-shadow:0 1px 2px rgba(0,0,0,.6)}.header .chip{cursor:pointer;background:#2f6df3;color:#fff;border-radius:16px;padding:3px 6px;font-weight:600;user-select:none;font-size:10px}.header .chip.secondary{background:#4b4b4b}.header .versions{font-size:8px;line-height:1.2;color:#e0e0e0;cursor:pointer}.header .power{position:absolute;right:15px;min-width:100px;text-align:right;display:flex;flex-direction:column;line-height:1.1}.header .power .p-label{font-weight:600;font-size:11px;opacity:.9}.header .power .p-value{font-weight:700;font-size:12px}.header .power .p-eta{font-weight:600;font-size:10px;opacity:.85}.modules{display:grid;grid-template-columns:1fr;gap:4px;width:100%}.battery-module{position:relative;background:#fff;border-radius:10px;padding:12px 10px 10px 60px;color:#222;border:1px solid #dcdcdc;box-shadow:inset 0 1px 0 rgba(255,255,255,.6);width:100%;aspect-ratio:5 / 2;max-height:180px}.battery-module.minimal{aspect-ratio:5/1;max-height:90px;padding-left:10px}.battery-module .mini{position:absolute;left:10px;right:8px;top:8px;bottom:8px;display:flex;flex-direction:column;gap:6px}.battery-module .mini-row{display:flex;align-items:center;gap:8px}.battery-module .mini-label{width:80px;font-size:10px;opacity:.8}.battery-module .mini-stat{font-size:11px;font-weight:700}.battery-module .hbar{flex:1;position:relative;height:10px;border-radius:6px;background:#fff;border:1px solid #e0e0e0;overflow:hidden}.battery-module.minimal .hbar{height:20px}.battery-module .hseg{position:absolute;top:0;bottom:0}.battery-module .hseg.cur{background:linear-gradient(to left, #000000 0%,#2e7d32 1px,#2e7d32 30%,#3b9440 70%,rgba(46,125,50,.25) 100%)}.battery-module .hseg.cur.bal{background:linear-gradient(to left, #000000 0%,#1e88e5 1px,#1e88e5 30%,#3396e8 70%,rgba(30,136,229,.25) 100%)}.battery-module .hseg.max{background:rgba(0,0,0,.08)}.battery-module .hseg.greencap{background:rgba(46,125,50,.25)}.battery-module .hseg.bluecap{background:rgba(30,136,229,.25)}.battery-module .hnum{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:10px;font-weight:700;color:#111;text-shadow:0 1px 1px rgba(255,255,255,.7)}.battery-module.minimal .hnum{color:#fff;text-shadow:0 1px 1px rgba(0,0,0,.6)}.battery-module.nodata{height:56px;max-height:none;aspect-ratio:auto;padding:8px 10px}.battery-module.no-axis{padding-left:10px}.battery-module.no-axis .chart{left:8px}.module-name{position:absolute;right:8px;bottom:6px;font-size:11px;background:rgba(255,255,255,.65);color:#333;padding:2px 6px;border-radius:6px;z-index:4}.axis{position:absolute;left:8px;top:8px;bottom:8px;width:48px;z-index:1}.axis .tick{display:none}.axis .label{position:absolute;left:0;transform:translateY(-50%);font-size:11px;color:#222}.chart{position:absolute;left:56px;right:8px;top:8px;bottom:8px;overflow:hidden}.grid-lines{position:absolute;left:0;right:0;top:0;bottom:0;pointer-events:none;z-index:3}.grid-lines .line{position:absolute;left:0;right:0;border-top:1px dashed rgba(0,0,0,.2)}.cells{position:absolute;left:0;right:0;bottom:0;top:0;display:flex;align-items:flex-end;gap:2px;padding:0 6px;z-index:2}.cell{flex:1;min-width:4px;background:#fff;position:relative;border-radius:2px;overflow:hidden;height:100%}.bar.cur{position:absolute;left:0;right:0;bottom:0;background:linear-gradient(to bottom, #000000 0%,#2e7d32 2%,#2e7d32 30%,#3b9440 70%,rgba(46,125,50,.25) 100%);transition:height .6s ease, bottom .6s ease}.bar.max{position:absolute;left:0;right:0;bottom:0;background:rgba(0,0,0,.08)}.bar.darkcap{position:absolute;left:0;right:0;bottom:0;background:rgba(0,0,0,.2)}.bar.greencap{position:absolute;left:0;right:0;bottom:0;background:rgba(46,125,50,.25)}.bar.bluecap{position:absolute;left:0;right:0;bottom:0;background:rgba(30,136,229,.25)}.cell.balancing .bar.cur{background:linear-gradient(to bottom, #000000 0%,#1e88e5 2%,#1e88e5 30%,#3396e8 70%,rgba(30,136,229,.25) 100%)}.cell.rise .bar.cur{animation:rise 0.6s ease-out}.cell.fall .bar.cur{animation:fall 0.6s ease-out}@keyframes rise{0%{box-shadow:0 0 0 rgba(0,0,0,0),0 0 0 rgba(0,0,0,0);transform:translateY(4%)}100%{box-shadow:0 0 0 rgba(0,0,0,0),0 0 0 rgba(0,0,0,0);transform:translateY(0)}}@keyframes fall{0%{box-shadow:0 0 0 rgba(0,0,0,0),0 0 0 rgba(0,0,0,0);transform:translateY(-4%)}100%{box-shadow:0 0 0 rgba(0,0,0,0),0 0 0 rgba(0,0,0,0);transform:translateY(0)}}.tooltip{position:absolute;left:0;top:0;transform:none;background:rgba(0,0,0,.85);color:#fff;font-size:11px;padding:4px 6px;border-radius:4px;white-space:nowrap;pointer-events:none;z-index:5}.soc-low .soc .fill{background:#d32f2f}.soc-mid .soc .fill{background:#1976d2}.soc-high .soc .fill{background:#2e7d32}.header.charge .soc .fill{background-size:30px 220px;background-image:repeating-linear-gradient(135deg, rgba(255,255,255,.15) 0 10px, transparent 10px 20px);animation:moveRight 8s linear infinite}.header.discharge .soc .fill{background-size:30px 220px;background-image:repeating-linear-gradient(225deg, rgba(255,255,255,.15) 0 10px, transparent 10px 20px);animation:moveLeft 8s linear infinite}@keyframes moveRight{from{background-position: 0 0;} to{background-position-x:200px}}@keyframes moveLeft{from{background-position: 0 0;} to{background-position-x:-200px}}.battery-stand{position:relative;height:22px;background:#2b2b2b;border-radius:4px;box-shadow:inset 0 1px 1px rgba(255,255,255,.08);margin-top:2px}.battery-stand .foot{position:absolute;bottom:-6px;width:22px;height:12px;background:#1e1e1e;border-radius:10px 10px 10px 10px/8px 8px 8px 8px;box-shadow:0 2px 0 rgba(0,0,0,.3)}.battery-stand .foot.left{left:10%}.battery-stand .foot.right{right:10%}@media (max-width:300px){.cells{gap:1px;padding:0 4px}.cell{min-width:2px}.axis .label{font-size:10px}}@media (max-width:256px){.cells{gap:0;padding:0 2px}.cell{min-width:0}.axis .label{font-size:9px}}";
 } catch (_) {}
 // ============================================================================
-// UTILITY FUNCTIONS - Helper for Performance & Security
+// UTILITY FUNCTIONS - Helper für Performance & Sicherheit
 // ============================================================================
 
 /**
- * Efficient array trimming using splice instead of slice
- * FIX: Prevents new array allocations by avoiding slice operations
- * @param {Array} arr - Array to clean up
- * @param {number} removeCount - Number of elements to remove
+ * Effiziente Array-Bereinigung mit Splice statt Slice
+ * FIX: Verhindert neue Array-Allokationen
+ * @param {Array} arr - Array zu bereinigen
+ * @param {number} removeCount - Anzahl zu entfernender Elemente
  */
 function efficientArrayTrim(arr, removeCount) {
   if (removeCount > 0 && arr.length > removeCount) {
@@ -48,10 +47,10 @@ function efficientArrayTrim(arr, removeCount) {
 }
 
 /**
- * Validates and filters numeric values
- * FIX: Cached filtering instead of multiple iterations
- * @param {Array} arr - Array to filter
- * @returns {Array} Filtered numeric values
+ * Validiert und filtert numerische Werte
+ * FIX: Gecachte Filterung statt mehrfacher Durchläufe
+ * @param {Array} arr - Zu filtierendes Array
+ * @returns {Array} Gefilterte numerische Werte
  */
 function getValidNumbers(arr) {
   if (!Array.isArray(arr)) return [];
@@ -59,11 +58,11 @@ function getValidNumbers(arr) {
 }
 
 /**
- * Safe access to element properties
- * FIX: Prevents null-reference errors through exception handling
+ * Sicherer Zugriff auf Element-Eigenschaften
+ * FIX: Verhindert null-reference errors
  * @param {ShadowRoot} shadowRoot - Shadow DOM Root
  * @param {string} id - Element ID
- * @returns {Element|null} Element or null
+ * @returns {Element|null} Element oder null
  */
 function safeGetElement(shadowRoot, id) {
   try {
@@ -74,10 +73,10 @@ function safeGetElement(shadowRoot, id) {
 }
 
 /**
- * Formats numbers with locale support
- * @param {number} value - Value to format
- * @param {number} decimals - Decimal places
- * @returns {string} Formatted number
+ * Formatiert Zahlen mit Locale-Unterstützung
+ * @param {number} value - Zu formatierende Zahl
+ * @param {number} decimals - Dezimalstellen
+ * @returns {string} Formatierte Zahl
  */
 function formatNumber(value, decimals = 1) {
   return Number(value).toLocaleString(void 0, {
@@ -87,10 +86,10 @@ function formatNumber(value, decimals = 1) {
 }
 
 /**
- * Calculates median of an array
- * FIX: Used for minimal view statistics calculation
- * @param {Array} arr - Input array
- * @returns {number} Median value
+ * Berechnet Median eines Arrays
+ * FIX: Für Minimal-View Statistiken
+ * @param {Array} arr - Input Array
+ * @returns {number} Median Wert
  */
 function getMedian(arr) {
   if (!arr.length) return 0;
@@ -99,10 +98,10 @@ function getMedian(arr) {
   return sorted.length % 2 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2;
 }
 // ============================================================================
-// BYD BATTERY HEADER COMPONENT - OPTIMIZED
+// BYD BATTERY HEADER COMPONENT - OPTIMIERT
 // ============================================================================
 
-var BYDHeaderComponent = class extends HTMLElement {
+var O = class extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: "open" });
@@ -173,9 +172,9 @@ var BYDHeaderComponent = class extends HTMLElement {
 // BYD BATTERY HEADER - CSS & DATA SETTERS
 // ============================================================================
 
- // Continue from BYDHeaderComponent class
+// Fortsetzung der O Klasse (BYD Battery Header)
 
-BYDHeaderComponent.prototype._adoptCss = function() {
+O.prototype._adoptCss = function() {
   try {
     let e = typeof globalThis < "u" ? globalThis : 
             typeof window < "u" ? window : void 0;
@@ -202,7 +201,7 @@ BYDHeaderComponent.prototype._adoptCss = function() {
   } catch (_) {}
 };
 
-BYDHeaderComponent.prototype.setBMUPower = function(e) {
+O.prototype.setBMUPower = function(e) {
   let t = this._bmuPower;
   this._bmuPower = Number(e) || 0;
   if (t !== this._bmuPower) {
@@ -210,7 +209,7 @@ BYDHeaderComponent.prototype.setBMUPower = function(e) {
   }
 };
 
-BYDHeaderComponent.prototype.setBMUVersion = function(e) {
+O.prototype.setBMUVersion = function(e) {
   let t = this._bmuVersion;
   this._bmuVersion = e ?? "";
   if (t !== this._bmuVersion) {
@@ -218,7 +217,7 @@ BYDHeaderComponent.prototype.setBMUVersion = function(e) {
   }
 };
 
-BYDHeaderComponent.prototype.setBMSVersion = function(e) {
+O.prototype.setBMSVersion = function(e) {
   let t = this._bmsVersion;
   this._bmsVersion = e ?? "";
   if (t !== this._bmsVersion) {
@@ -226,7 +225,7 @@ BYDHeaderComponent.prototype.setBMSVersion = function(e) {
   }
 };
 
-BYDHeaderComponent.prototype.setUIMeta = function(e) {
+O.prototype.setUIMeta = function(e) {
   let t = this._uiMeta;
   this._uiMeta = e ?? "";
   if (t !== this._uiMeta) {
@@ -234,7 +233,7 @@ BYDHeaderComponent.prototype.setUIMeta = function(e) {
   }
 };
 
-BYDHeaderComponent.prototype.setStateOfCharge = function(e) {
+O.prototype.setStateOfCharge = function(e) {
   let t = this._soc;
   this._soc = Number(e) || 0;
   if (t !== this._soc) {
@@ -242,7 +241,7 @@ BYDHeaderComponent.prototype.setStateOfCharge = function(e) {
   }
 };
 
-BYDHeaderComponent.prototype.setStateOfHealth = function(e) {
+O.prototype.setStateOfHealth = function(e) {
   let t = this._soh;
   this._soh = Number(e) || 0;
   if (t !== this._soh) {
@@ -250,23 +249,23 @@ BYDHeaderComponent.prototype.setStateOfHealth = function(e) {
   }
 };
 
-BYDHeaderComponent.prototype.setTowerCapacityWh = function(e) {
+O.prototype.setTowerCapacityWh = function(e) {
   this._towerCapacityWh = Number(e) || 0;
   this._updateCapacity();
   this._applyResponsive();
 };
 
-BYDHeaderComponent.prototype.setEstimate = function(e) {
+O.prototype.setEstimate = function(e) {
   this._etaText = e || "";
   this._updateETA();
 };
 
-BYDHeaderComponent.prototype.setProductName = function(e) {
+O.prototype.setProductName = function(e) {
   this._productName = e || "";
   this._updateProductName();
 };
 
-BYDHeaderComponent.prototype.setView = function(e) {
+O.prototype.setView = function(e) {
   let t = e === "temperature" ? "temperature" : "voltage";
   if (this._view !== t) {
     this._view = t;
@@ -274,7 +273,7 @@ BYDHeaderComponent.prototype.setView = function(e) {
   }
 };
 
-BYDHeaderComponent.prototype.setDisplayUnit = function(e) {
+O.prototype.setDisplayUnit = function(e) {
   let t = e === "V" ? "V" : "mV";
   if (this._displayUnit !== t) {
     this._displayUnit = t;
@@ -282,14 +281,14 @@ BYDHeaderComponent.prototype.setDisplayUnit = function(e) {
   }
 };
 
-BYDHeaderComponent.prototype.showVoltage = function() {
+O.prototype.showVoltage = function() {
   this.setView("voltage");
   this.dispatchEvent(
     new CustomEvent("toggle-view", { detail: { view: "voltage" } })
   );
 };
 
-BYDHeaderComponent.prototype.showTemperature = function() {
+O.prototype.showTemperature = function() {
   this.setView("temperature");
   this.dispatchEvent(
     new CustomEvent("toggle-view", { detail: { view: "temperature" } })
@@ -299,39 +298,39 @@ BYDHeaderComponent.prototype.showTemperature = function() {
 // BYD BATTERY HEADER - RENDER LOGIC
 // ============================================================================
 
-BYDHeaderComponent.prototype._render = function() {
+O.prototype._render = function() {
   let e = this.shadowRoot;
   if (!e) return;
 
-  // Calculate SOC class based on constants
-  let socClass = this._soc <= BYD_CONFIG.SOC_THRESHOLDS.low ? "soc-low" :
+  // Berechne SOC-Klasse basierend auf Konstanten
+  let socClass = this._soc <= BYD_CONFIG.SOC_THRESHOLDS.low ? "soc-low" : 
                  this._soc <= BYD_CONFIG.SOC_THRESHOLDS.mid ? "soc-mid" : "soc-high";
-
-  let powerClass = this._bmuPower < 0 ? "charge" :
+  
+  let powerClass = this._bmuPower < 0 ? "charge" : 
                    this._bmuPower > 0 ? "discharge" : "";
-
+  
   let tempChipClass = this._view === "temperature" ? "chip" : "chip secondary";
   let unitChipClass = this._view === "voltage" ? "chip" : "chip secondary";
-
+  
   let headerText = this._getCurrentHeaderInfoText();
   let powerValue = Number(this._bmuPower) || 0;
-  let powerLabel = powerValue < 0 ? "Charging" :
+  let powerLabel = powerValue < 0 ? "Charging" : 
                    powerValue > 0 ? "Discharging" : "Idle";
   let powerDisplay = `${Math.abs(Math.round(powerValue))} W`;
-
+  
   let towerEl = e.querySelector(".battery-tower");
 
   if (towerEl) {
-    // OPT: Update instead of complete rebuild
+    // FIX: Update statt kompletter Neuaufbau
     towerEl.className = `battery-tower ${socClass}`;
-
+    
     let headerEl = e.querySelector(".header");
     if (headerEl) {
       headerEl.classList.toggle("charge", this._bmuPower < 0);
       headerEl.classList.toggle("discharge", this._bmuPower > 0);
     }
 
-    // OPT: Cached element references with safeGetElement
+    // FIX: Gecachte Element-Referenzen mit safeGetElement
     let unitEl = safeGetElement(e, "unit");
     let tempEl = safeGetElement(e, "temp");
     let viewmodeEl = safeGetElement(e, "viewmode");
@@ -340,12 +339,12 @@ BYDHeaderComponent.prototype._render = function() {
       unitEl.className = unitChipClass;
       unitEl.style.display = this._showVTToggle ? "" : "none";
     }
-
+    
     if (tempEl) {
       tempEl.className = tempChipClass;
       tempEl.style.display = this._showVTToggle ? "" : "none";
     }
-
+    
     if (viewmodeEl) {
       viewmodeEl.style.display = this._showViewToggle ? "" : "none";
     }
@@ -354,13 +353,13 @@ BYDHeaderComponent.prototype._render = function() {
     if (headerInfoEl) {
       headerInfoEl.innerHTML = headerText;
       headerInfoEl.style.display = this._enabledHeaderInfoKeys().length ? "" : "none";
-      headerInfoEl.style.cursor =
+      headerInfoEl.style.cursor = 
         this._enabledHeaderInfoKeys().length > 1 ? "pointer" : "default";
     }
 
     let powerEl = e.querySelector(".power");
     if (powerEl) {
-      powerEl.style.display =
+      powerEl.style.display = 
         this._showPower || (this._showETA && this._etaText) ? "" : "none";
     }
 
@@ -413,8 +412,8 @@ BYDHeaderComponent.prototype._render = function() {
 
     let viewmodeDisplayEl = safeGetElement(e, "viewmode");
     if (viewmodeDisplayEl) {
-      viewmodeDisplayEl.textContent =
-        this._moduleView === "minimal" ? "Minimal" :
+      viewmodeDisplayEl.textContent = 
+        this._moduleView === "minimal" ? "Minimal" : 
         this._moduleView === "none" ? "No Data" : "Detailed";
     }
 
@@ -424,12 +423,12 @@ BYDHeaderComponent.prototype._render = function() {
     return;
   }
 
-  // Initialization: Create DOM
-  this._initializeDom(e, socClass, powerClass, tempChipClass, unitChipClass,
+  // Initialisierung: DOM erstellen
+  this._initializeDom(e, socClass, powerClass, tempChipClass, unitChipClass, 
                       headerText, powerLabel, powerDisplay);
 };
 
-BYDHeaderComponent.prototype._initializeDom = function(e, socClass, powerClass, tempChipClass,
+O.prototype._initializeDom = function(e, socClass, powerClass, tempChipClass, 
                                       unitChipClass, headerText, powerLabel, powerDisplay) {
   e.innerHTML = `
     <div class="battery-tower ${socClass}">
@@ -470,13 +469,13 @@ BYDHeaderComponent.prototype._initializeDom = function(e, socClass, powerClass, 
 // BYD BATTERY HEADER - EVENT LISTENERS
 // ============================================================================
 
-BYDHeaderComponent.prototype._attachEventListeners = function(e) {
+O.prototype._attachEventListeners = function(e) {
   let unitEl = safeGetElement(e, "unit");
   let tempEl = safeGetElement(e, "temp");
   let viewmodeEl = safeGetElement(e, "viewmode");
   let headerInfoEl = safeGetElement(e, "header_information");
 
-  // FIX: Listener functions defined and stored
+  // FIX: Listener-Funktionen definieren und speichern
   this._boundListeners.unit = (r) => {
     r.preventDefault();
     r.stopPropagation();
@@ -515,14 +514,14 @@ BYDHeaderComponent.prototype._attachEventListeners = function(e) {
     }
   };
 
-  // FIX: Event Listeners attached
+  // FIX: Event Listener attachen
   unitEl?.addEventListener("pointerdown", this._boundListeners.unit);
   tempEl?.addEventListener("pointerdown", this._boundListeners.temp);
   viewmodeEl?.addEventListener("pointerdown", this._boundListeners.viewmode);
   headerInfoEl?.addEventListener("pointerdown", this._boundListeners.headerinfo);
 };
 
-BYDHeaderComponent.prototype._removeAllListeners = function() {
+O.prototype._removeAllListeners = function() {
   let e = this.shadowRoot;
   if (!e) return;
 
@@ -531,22 +530,22 @@ BYDHeaderComponent.prototype._removeAllListeners = function() {
   let viewmodeEl = safeGetElement(e, "viewmode");
   let headerInfoEl = safeGetElement(e, "header_information");
 
-  // FIX: Remove all listeners
+  // FIX: Alle Listener entfernen
   unitEl?.removeEventListener("pointerdown", this._boundListeners.unit);
   tempEl?.removeEventListener("pointerdown", this._boundListeners.temp);
   viewmodeEl?.removeEventListener("pointerdown", this._boundListeners.viewmode);
   headerInfoEl?.removeEventListener("pointerdown", this._boundListeners.headerinfo);
 
-  // FIX: Clear listener object (prevents memory leaks)
+  // FIX: Listener-Objekt clearen (verhindert Memory Leaks)
   this._boundListeners = {};
 };
 // ============================================================================
 // BYD BATTERY HEADER - RESIZE OBSERVER & RENDER SCHEDULING
 // ============================================================================
 
-BYDHeaderComponent.prototype._setupResizeObserver = function() {
+O.prototype._setupResizeObserver = function() {
   if (this._ro) return;
-
+  
   if (typeof ResizeObserver < "u") {
     this._ro = new ResizeObserver(() => this._applyResponsive());
     this._ro.observe(this);
@@ -555,32 +554,32 @@ BYDHeaderComponent.prototype._setupResizeObserver = function() {
   }
 };
 
-BYDHeaderComponent.prototype._cleanupResizeObserver = function() {
+O.prototype._cleanupResizeObserver = function() {
   if (this._ro) {
     this._ro.disconnect();
     this._ro = null;
   }
 };
 
-BYDHeaderComponent.prototype._applyResponsive = function() {
+O.prototype._applyResponsive = function() {
   let e = this.shadowRoot;
   if (!e) return;
-
+  
   let headerInfoEl = safeGetElement(e, "header_information");
   let width = this.getBoundingClientRect().width || 0;
-
+  
   if (headerInfoEl) {
-    headerInfoEl.style.display =
+    headerInfoEl.style.display = 
       width < 300 || this._enabledHeaderInfoKeys().length === 0 ? "none" : "";
   }
 };
 
-BYDHeaderComponent.prototype._scheduleRender = function() {
-  // FIX: Render debouncing - prevents excessive renders
+O.prototype._scheduleRender = function() {
+  // FIX: Render Debouncing - verhindert zu viele Renders
   if (this._renderScheduled && this._renderFrame) {
     cancelAnimationFrame(this._renderFrame);
   }
-
+  
   this._renderScheduled = true;
   this._renderFrame = requestAnimationFrame(() => {
     this._render();
@@ -592,7 +591,7 @@ BYDHeaderComponent.prototype._scheduleRender = function() {
 // BYD BATTERY HEADER - HEADER INFORMATION & UI TOGGLES
 // ============================================================================
 
-BYDHeaderComponent.prototype._enabledHeaderInfoKeys = function() {
+O.prototype._enabledHeaderInfoKeys = function() {
   let show = this._headerInfo?.show || {};
   let keys = ["versions", "ui", "energy", "efficiency"].filter(
     (i) => show[i] !== false
@@ -600,31 +599,31 @@ BYDHeaderComponent.prototype._enabledHeaderInfoKeys = function() {
   return keys.length ? keys : ["versions", "ui", "energy", "efficiency"];
 };
 
-BYDHeaderComponent.prototype._currentHeaderKey = function() {
+O.prototype._currentHeaderKey = function() {
   let keys = this._enabledHeaderInfoKeys();
   if (keys.length === 0) return "";
-
+  
   let defaultKey = this._headerInfo?.default || "versions";
-  let index = (Math.max(0, keys.indexOf(defaultKey)) +
+  let index = (Math.max(0, keys.indexOf(defaultKey)) + 
                (this._headerInfoIndex || 0)) % keys.length;
   return keys[index];
 };
 
-BYDHeaderComponent.prototype._getCurrentHeaderInfoText = function() {
+O.prototype._getCurrentHeaderInfoText = function() {
   let payload = this._headerInfo?.payload || {};
   let keys = this._enabledHeaderInfoKeys();
-
+  
   if (keys.length === 0) return "";
-
+  
   let defaultKey = this._headerInfo?.default || "versions";
   let defaultIndex = keys.indexOf(defaultKey);
   let index = defaultIndex >= 0 ? defaultIndex : 0;
-
+  
   let currentIndex = (index + this._headerInfoIndex) % keys.length;
   let currentKey = keys[currentIndex];
-
+  
   if (currentKey === "versions") {
-    return payload.versionsText ||
+    return payload.versionsText || 
            `BMU ${this._bmuVersion || ""}<br>BMS ${this._bmsVersion || ""}`;
   } else if (currentKey === "ui") {
     return payload.uiText || this._uiMeta || "";
@@ -636,7 +635,7 @@ BYDHeaderComponent.prototype._getCurrentHeaderInfoText = function() {
   return "";
 };
 
-BYDHeaderComponent.prototype.setShowVTToggle = function(e) {
+O.prototype.setShowVTToggle = function(e) {
   let t = this._showVTToggle;
   this._showVTToggle = e !== false;
   if (t !== this._showVTToggle) {
@@ -644,7 +643,7 @@ BYDHeaderComponent.prototype.setShowVTToggle = function(e) {
   }
 };
 
-BYDHeaderComponent.prototype.setShowViewToggle = function(e) {
+O.prototype.setShowViewToggle = function(e) {
   let t = this._showViewToggle;
   this._showViewToggle = !!e;
   if (t !== this._showViewToggle) {
@@ -652,16 +651,16 @@ BYDHeaderComponent.prototype.setShowViewToggle = function(e) {
   }
 };
 
-BYDHeaderComponent.prototype.setModuleView = function(e) {
+O.prototype.setModuleView = function(e) {
   let t = this._moduleView;
-  this._moduleView =
+  this._moduleView = 
     e === "minimal" ? "minimal" : e === "none" ? "none" : "detailed";
   if (t !== this._moduleView) {
     this._scheduleRender();
   }
 };
 
-BYDHeaderComponent.prototype.setHeaderInformation = function(e) {
+O.prototype.setHeaderInformation = function(e) {
   if (e && typeof e == "object") {
     let currentKey = this._currentHeaderKey();
     this._headerInfo = {
@@ -669,23 +668,23 @@ BYDHeaderComponent.prototype.setHeaderInformation = function(e) {
       show: e.show || this._headerInfo.show,
       payload: e.payload || this._headerInfo.payload,
     };
-
+    
     let newKeys = this._enabledHeaderInfoKeys();
     let newDefaultKey = this._headerInfo.default || "versions";
     let newDefaultIndex = Math.max(0, newKeys.indexOf(newDefaultKey));
-
+    
     if (currentKey && newKeys.includes(currentKey)) {
       let offset = (newKeys.indexOf(currentKey) - newDefaultIndex + newKeys.length) % newKeys.length;
       this._headerInfoIndex = offset;
     } else {
       this._headerInfoIndex = 0;
     }
-
+    
     this._render();
   }
 };
 
-BYDHeaderComponent.prototype.setHeaderDisplayOptions = function(e) {
+O.prototype.setHeaderDisplayOptions = function(e) {
   if (e && typeof e == "object") {
     if (e.showPower !== void 0) {
       this._showPower = !!e.showPower;
@@ -703,13 +702,13 @@ BYDHeaderComponent.prototype.setHeaderDisplayOptions = function(e) {
 // BYD BATTERY HEADER - UPDATE HELPER METHODS
 // ============================================================================
 
-BYDHeaderComponent.prototype._updateCapacity = function() {
+O.prototype._updateCapacity = function() {
   let e = this.shadowRoot;
   if (!e) return;
-
+  
   let capacityEl = safeGetElement(e, "capacity");
   if (!capacityEl) return;
-
+  
   let capacity = Number(this._towerCapacityWh) || 0;
   if (capacity > 0) {
     let kWh = capacity / 1000;
@@ -719,10 +718,10 @@ BYDHeaderComponent.prototype._updateCapacity = function() {
   }
 };
 
-BYDHeaderComponent.prototype._updateETA = function() {
+O.prototype._updateETA = function() {
   let e = this.shadowRoot;
   if (!e) return;
-
+  
   let etaEl = safeGetElement(e, "eta");
   if (etaEl) {
     etaEl.textContent = this._etaText || "";
@@ -730,10 +729,10 @@ BYDHeaderComponent.prototype._updateETA = function() {
   }
 };
 
-BYDHeaderComponent.prototype._updateProductName = function() {
+O.prototype._updateProductName = function() {
   let e = this.shadowRoot;
   if (!e) return;
-
+  
   let productNameEl = safeGetElement(e, "productname");
   if (productNameEl) {
     productNameEl.textContent = this._productName || "";
@@ -742,12 +741,12 @@ BYDHeaderComponent.prototype._updateProductName = function() {
 
 // Registriere Custom Element
 customElements.get("byd-battery-header") ||
-  customElements.define("byd-battery-header", BYDHeaderComponent);
+  customElements.define("byd-battery-header", O);
 // ============================================================================
-// BYD BATTERY MODULE COMPONENT - OPTIMIZED
+// BYD BATTERY MODULE COMPONENT - OPTIMIERT
 // ============================================================================
 
-var BYDModuleComponent = class extends HTMLElement {
+var q = class extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: "open" });
@@ -818,13 +817,13 @@ var BYDModuleComponent = class extends HTMLElement {
 // BYD BATTERY MODULE - CSS & DATA SETTERS
 // ============================================================================
 
-BYDModuleComponent.prototype._adoptCss = function() {
+q.prototype._adoptCss = function() {
   try {
     if (this._sheet || !this.shadowRoot) return;
-
-    let e = typeof globalThis < "u" ? globalThis :
+    
+    let e = typeof globalThis < "u" ? globalThis : 
             typeof window < "u" ? window : void 0;
-
+    
     let t = () => {
       let a = e && e.__BYD_CSS_SHEET;
       if (a) {
@@ -832,12 +831,12 @@ BYDModuleComponent.prototype._adoptCss = function() {
         this._sheet = a;
       }
     };
-
+    
     if (e && e.__BYD_CSS_SHEET) {
       t();
       return;
     }
-
+    
     let i = () => {
       window.removeEventListener("byd-css-ready", i);
       t();
@@ -846,7 +845,7 @@ BYDModuleComponent.prototype._adoptCss = function() {
   } catch {}
 };
 
-BYDModuleComponent.prototype._cleanupListeners = function() {
+q.prototype._cleanupListeners = function() {
   // FIX: Alle Event Listener vollständig entfernen
   this._cellListeners.forEach((listener) => {
     if (listener.element) {
@@ -859,19 +858,19 @@ BYDModuleComponent.prototype._cleanupListeners = function() {
   this._cellListeners = [];
 };
 
-BYDModuleComponent.prototype._cleanupTooltip = function() {
+q.prototype._cleanupTooltip = function() {
   if (this._tooltipTimeout) {
     clearTimeout(this._tooltipTimeout);
     this._tooltipTimeout = null;
   }
 };
 
-BYDModuleComponent.prototype._scheduleRender = function() {
+q.prototype._scheduleRender = function() {
   // FIX: Render Debouncing
   if (this._renderScheduled && this._renderFrame) {
     cancelAnimationFrame(this._renderFrame);
   }
-
+  
   this._renderScheduled = true;
   this._renderFrame = requestAnimationFrame(() => {
     this._render();
@@ -880,22 +879,22 @@ BYDModuleComponent.prototype._scheduleRender = function() {
   });
 };
 
-BYDModuleComponent.prototype.setVoltage = function(e) {
+q.prototype.setVoltage = function(e) {
   this._setArray("voltage", e);
   this._scheduleRender();
 };
 
-BYDModuleComponent.prototype.setHistoryMaxVoltage = function(e) {
+q.prototype.setHistoryMaxVoltage = function(e) {
   this._setArray("histMax", e);
   this._scheduleRender();
 };
 
-BYDModuleComponent.prototype.setHistoryMinVoltage = function(e) {
+q.prototype.setHistoryMinVoltage = function(e) {
   this._setArray("histMin", e);
   this._scheduleRender();
 };
 
-BYDModuleComponent.prototype.setChartMaxVoltage = function(e) {
+q.prototype.setChartMaxVoltage = function(e) {
   let t = this._chart.vMax;
   this._chart.vMax = Number(e) || this._chart.vMax;
   if (t !== this._chart.vMax) {
@@ -903,7 +902,7 @@ BYDModuleComponent.prototype.setChartMaxVoltage = function(e) {
   }
 };
 
-BYDModuleComponent.prototype.setChartMinVoltage = function(e) {
+q.prototype.setChartMinVoltage = function(e) {
   let t = this._chart.vMin;
   this._chart.vMin = Number(e) || this._chart.vMin;
   if (t !== this._chart.vMin) {
@@ -911,12 +910,12 @@ BYDModuleComponent.prototype.setChartMinVoltage = function(e) {
   }
 };
 
-BYDModuleComponent.prototype.setTemperature = function(e) {
+q.prototype.setTemperature = function(e) {
   this._setArray("temp", e);
   this._scheduleRender();
 };
 
-BYDModuleComponent.prototype.setChartMaxTemperature = function(e) {
+q.prototype.setChartMaxTemperature = function(e) {
   let t = this._chart.tMax;
   this._chart.tMax = Number(e) || this._chart.tMax;
   if (t !== this._chart.tMax) {
@@ -924,7 +923,7 @@ BYDModuleComponent.prototype.setChartMaxTemperature = function(e) {
   }
 };
 
-BYDModuleComponent.prototype.setChartMinTemperature = function(e) {
+q.prototype.setChartMinTemperature = function(e) {
   let t = this._chart.tMin;
   this._chart.tMin = Number(e) || this._chart.tMin;
   if (t !== this._chart.tMin) {
@@ -932,12 +931,12 @@ BYDModuleComponent.prototype.setChartMinTemperature = function(e) {
   }
 };
 
-BYDModuleComponent.prototype.setCellBallancing = function(e) {
+q.prototype.setCellBallancing = function(e) {
   this._balancing = Array.isArray(e) ? e : [];
   this._scheduleRender();
 };
 
-BYDModuleComponent.prototype.setShowGrayCaps = function(e) {
+q.prototype.setShowGrayCaps = function(e) {
   let t = this._showGrayCaps;
   this._showGrayCaps = e !== false;
   if (t !== this._showGrayCaps) {
@@ -945,7 +944,7 @@ BYDModuleComponent.prototype.setShowGrayCaps = function(e) {
   }
 };
 
-BYDModuleComponent.prototype.setDisplayUnit = function(e) {
+q.prototype.setDisplayUnit = function(e) {
   let t = this._displayUnit;
   this._displayUnit = e === "V" ? "V" : "mV";
   if (t !== this._displayUnit) {
@@ -953,7 +952,7 @@ BYDModuleComponent.prototype.setDisplayUnit = function(e) {
   }
 };
 
-BYDModuleComponent.prototype.setModuleView = function(e) {
+q.prototype.setModuleView = function(e) {
   let t = this._moduleView;
   this._moduleView = 
     e === "minimal" ? "minimal" : e === "none" ? "none" : "detailed";
@@ -965,34 +964,34 @@ BYDModuleComponent.prototype.setModuleView = function(e) {
 // BYD BATTERY MODULE - VIEW & ARRAY OPERATIONS
 // ============================================================================
 
-BYDModuleComponent.prototype.setStateOfCharge = function() {};
-BYDModuleComponent.prototype.setStateOfHealth = function() {};
-BYDModuleComponent.prototype.setEfficiency = function() {};
-BYDModuleComponent.prototype.setBMUPower = function() {};
-BYDModuleComponent.prototype.setBMUVersion = function() {};
-BYDModuleComponent.prototype.setBMSVersion = function() {};
+q.prototype.setStateOfCharge = function() {};
+q.prototype.setStateOfHealth = function() {};
+q.prototype.setEfficiency = function() {};
+q.prototype.setBMUPower = function() {};
+q.prototype.setBMUVersion = function() {};
+q.prototype.setBMSVersion = function() {};
 
-BYDModuleComponent.prototype.showVoltage = function() {
+q.prototype.showVoltage = function() {
   this._view = "voltage";
   this._scheduleRender();
 };
 
-BYDModuleComponent.prototype.showTemperature = function() {
+q.prototype.showTemperature = function() {
   this._view = "temperature";
   this._scheduleRender();
 };
 
-BYDModuleComponent.prototype.showYAxisValues = function() {
+q.prototype.showYAxisValues = function() {
   this._yAxis = true;
   this._scheduleRender();
 };
 
-BYDModuleComponent.prototype.hideYAxisValues = function() {
+q.prototype.hideYAxisValues = function() {
   this._yAxis = false;
   this._scheduleRender();
 };
 
-Object.defineProperty(BYDModuleComponent.prototype, "name", {
+Object.defineProperty(q.prototype, "name", {
   set: function(e) {
     this._name = e;
     this._render();
@@ -1002,14 +1001,14 @@ Object.defineProperty(BYDModuleComponent.prototype, "name", {
   }
 });
 
-BYDModuleComponent.prototype._setArray = function(e, t) {
+q.prototype._setArray = function(e, t) {
   // FIX: Effiziente Array-Verwaltung
-  let i = e === "voltage" ? "voltage" :
-          e === "histMax" ? "histMax" :
+  let i = e === "voltage" ? "voltage" : 
+          e === "histMax" ? "histMax" : 
           e === "histMin" ? "histMin" : e;
-
+  
   if (!Array.isArray(t)) return;
-
+  
   // Speichere alte Werte für Animationen
   if (i === "voltage") {
     this._last.voltage = this._voltage;
@@ -1020,12 +1019,12 @@ BYDModuleComponent.prototype._setArray = function(e, t) {
   } else if (i === "histMax") {
     this._last.histMax = this._histMax;
   }
-
+  
   // Setze neue Werte
   this["_" + i] = t;
 };
 
-BYDModuleComponent.prototype._getAxis = function() {
+q.prototype._getAxis = function() {
   if (this._view === "temperature") {
     return {
       min: this._chart.tMin,
@@ -1033,93 +1032,131 @@ BYDModuleComponent.prototype._getAxis = function() {
       unit: "°C"
     };
   }
-
+  
   // FIX: Effiziente Min/Max Berechnung mit getValidNumbers
   let validMin = getValidNumbers(this._histMin);
   let validVoltage = getValidNumbers(this._voltage);
   let validMax = getValidNumbers(this._histMax);
-
-  let min = this._chart.vMin ??
-            (validMin.length ? Math.min(...validMin) :
+  
+  let min = this._chart.vMin ?? 
+            (validMin.length ? Math.min(...validMin) : 
              validVoltage.length ? Math.min(...validVoltage) : 3100);
-
-  let max = this._chart.vMax ??
-            (validMax.length ? Math.max(...validMax) :
+  
+  let max = this._chart.vMax ?? 
+            (validMax.length ? Math.max(...validMax) : 
              validVoltage.length ? Math.max(...validVoltage) : 3700);
-
+  
   let unit = this._displayUnit === "V" ? "V" : "mV";
-
+  
   return { min, max, unit };
 };
 // ============================================================================
 // BYD BATTERY MODULE - RENDER MINIMAL VIEW
 // ============================================================================
 
-BYDModuleComponent.prototype._renderMinimalView = function(e) {
-  let isTemperature = this._view === "temperature";
-  let data = isTemperature ? this._temp : this._voltage;
-
-  // Calculate statistics
-  let allValues = getValidNumbers(data.flat());
-  let max = Math.max(...allValues, 0);
-  let min = Math.min(...allValues, 0);
-  let avg = allValues.length ? allValues.reduce((a, b) => a + b, 0) / allValues.length : 0;
-  let median = getMedian(allValues);
-
-  let formatStat = (value) => {
-    if (isTemperature) {
-      return `${formatNumber(value, 1)} °C`;
-    }
+q.prototype._renderMinimalView = function(e) {
+  // FIX: Gecachte Filterung statt mehrfacher Durchläufe
+  let validVoltages = getValidNumbers(this._voltage);
+  let validTemps = getValidNumbers(this._temp);
+  let validHistMin = getValidNumbers(this._histMin);
+  let validHistMax = getValidNumbers(this._histMax);
+  
+  // FIX: Median statt Average für robustere Statistik
+  let medianVoltage = getMedian(validVoltages);
+  let medianHistMin = getMedian(validHistMin);
+  let medianHistMax = getMedian(validHistMax);
+  let medianTemp = getMedian(validTemps);
+  
+  let voltageOffset = 0;
+  if (Math.max(0, medianVoltage - medianHistMin) < 20) {
+    voltageOffset = 150;
+  }
+  
+  let formatValue = (d) => {
     return this._displayUnit === "V"
-      ? `${(value / 1000).toLocaleString(void 0, { minimumFractionDigits: 3, maximumFractionDigits: 3 })} V`
-      : `${Math.round(value)} mV`;
+      ? `${(Number(d) / 1000).toLocaleString(void 0, { 
+          minimumFractionDigits: 3, 
+          maximumFractionDigits: 3 
+        })} V`
+      : `${Math.round(Number(d))} mV`;
   };
-
-  // Render minimal layout
+  
+  let calcPercent = (d) => {
+    let y = this._chart.vMin;
+    let x = this._chart.vMax;
+    return !Number.isFinite(d) || x === y
+      ? 0
+      : ((Math.min(x, Math.max(y, Number(d))) - y) / (x - y)) * 100;
+  };
+  
+  let calcTempPercent = (d) => {
+    let y = this._chart.tMin;
+    let x = this._chart.tMax;
+    return !Number.isFinite(d) || x === y
+      ? 0
+      : ((Math.min(x, Math.max(y, Number(d))) - y) / (x - y)) * 100;
+  };
+  
+  let minPercent = calcPercent(medianHistMin - voltageOffset);
+  let medianPercent = calcPercent(medianVoltage);
+  let rangePercent = Math.max(0, medianPercent - minPercent);
+  let centerPercent = minPercent + rangePercent / 2;
+  
+  let isBalancing = (this._balancing || []).some(d => d === 1 || d === true);
+  let balancingCount = (this._balancing || []).filter(d => d === 1 || d === true).length;
+  
   e.innerHTML = `
-    <div class="battery-module minimal">
+    <div class="battery-module minimal no-axis">
       <div class="mini">
         <div class="mini-row">
-          <div class="mini-label">Max</div>
-          <div class="mini-stat">${formatStat(max)}</div>
-          <div class="hbar" style="background: linear-gradient(to right, #2e7d32 0%, #2e7d32 100%); height: 20px; border-radius: 6px;"></div>
+          <div class="mini-label">Voltage</div>
+          <div class="hbar">
+            <div class="hseg ${isBalancing ? "bluecap" : "greencap"}" 
+                 style="left:0;width:${Math.max(0, calcPercent(medianHistMin))}%;"></div>
+            <div class="hseg cur${isBalancing ? " bal" : ""}" 
+                 style="left:${minPercent}%;width:${rangePercent}%;"></div>
+            ${this._showGrayCaps ? `<div class="hseg max" 
+                 style="left:${medianPercent}%;width:${Math.max(0, calcPercent(medianHistMax) - medianPercent)}%"></div>` : ""}
+            <div class="hnum" style="left:${centerPercent}%; color:#fff;">${formatValue(medianVoltage)}</div>
+          </div>
         </div>
         <div class="mini-row">
-          <div class="mini-label">Median</div>
-          <div class="mini-stat">${formatStat(median)}</div>
-          <div class="hbar" style="background: linear-gradient(to right, #1976d2 0%, #1976d2 100%); height: 20px; border-radius: 6px;"></div>
+          <div class="mini-label">Temperature</div>
+          <div class="hbar">
+            <div class="hseg cur" style="left:0;width:${Math.max(0, calcTempPercent(medianTemp))}%;"></div>
+            <div class="hnum" style="left:${Math.max(0, calcTempPercent(medianTemp)) / 2}%; color:#fff;">
+              ${formatNumber(medianTemp, 1)} °C
+            </div>
+          </div>
         </div>
         <div class="mini-row">
-          <div class="mini-label">Min</div>
-          <div class="mini-stat">${formatStat(min)}</div>
-          <div class="hbar" style="background: linear-gradient(to right, #d32f2f 0%, #d32f2f 100%); height: 20px; border-radius: 6px;"></div>
+          <div class="mini-label">Cell Balancing</div>
+          <div class="mini-stat">${balancingCount}</div>
         </div>
       </div>
       <div class="module-name">${this._name || ""}</div>
-    </div>
-  `;
+    </div>`;
 };
-
 // ============================================================================
-// BYD BATTERY MODULE - MAIN RENDER LOGIC
+// BYD BATTERY MODULE - MAIN RENDER LOGIC (FORTSETZUNG)
 // ============================================================================
 
-BYDModuleComponent.prototype._render = function() {
-    let e = this.shadowRoot;
-    if (!e) return;
-
-    // FIX: Cleanup vor neuem Render
-    this._cleanupListeners();
-    this._cleanupTooltip();
-
-    let axis = this._getAxis();
-    let isTemperature = this._view === "temperature";
-
-    // Minimal View
-    if (this._moduleView === "minimal") {
-      this._renderMinimalView(e);
-      return;
-    }
+q.prototype._render = function() {
+  let e = this.shadowRoot;
+  if (!e) return;
+  
+  // FIX: Cleanup vor neuem Render
+  this._cleanupListeners();
+  this._cleanupTooltip();
+  
+  let axis = this._getAxis();
+  let isTemperature = this._view === "temperature";
+  
+  // Minimal View
+  if (this._moduleView === "minimal") {
+    this._renderMinimalView(e);
+    return;
+  }
   
   // No Data View
   if (this._moduleView === "none") {
@@ -1325,8 +1362,8 @@ BYDModuleComponent.prototype._render = function() {
   }
 };
 
-BYDModuleComponent.prototype._attachCellListeners = function(cellEl, chartEl, tooltipEl,
-                                           cellValue, formatDisplayValue,
+q.prototype._attachCellListeners = function(cellEl, chartEl, tooltipEl, 
+                                           cellValue, formatDisplayValue, 
                                            hideTooltip, index) {
   let showTooltip = (evt) => {
     let chartRect = chartEl.getBoundingClientRect();
@@ -1394,7 +1431,7 @@ BYDModuleComponent.prototype._attachCellListeners = function(cellEl, chartEl, to
   });
 };
 
-BYDModuleComponent.prototype._restoreTooltip = function(tooltipEl, chartEl) {
+q.prototype._restoreTooltip = function(tooltipEl, chartEl) {
   let chartRect = chartEl.getBoundingClientRect();
   let tooltipWidth = tooltipEl.offsetWidth || 50;
   let tooltipHeight = tooltipEl.offsetHeight || 20;
@@ -1420,7 +1457,7 @@ BYDModuleComponent.prototype._restoreTooltip = function(tooltipEl, chartEl) {
   }, remaining);
 };
 
-BYDModuleComponent.prototype._attachChartListeners = function(chartEl, tooltipEl, data, axis,
+q.prototype._attachChartListeners = function(chartEl, tooltipEl, data, axis, 
                                             formatDisplayValue, hideTooltip) {
   let clamp = (val, min, max) => Math.max(min, Math.min(max, val));
   
@@ -1463,7 +1500,7 @@ BYDModuleComponent.prototype._attachChartListeners = function(chartEl, tooltipEl
 // BYD BATTERY MODULE - AXIS RENDERING
 // ============================================================================
 
-BYDModuleComponent.prototype._renderAxis = function(axisEl, axis) {
+q.prototype._renderAxis = function(axisEl, axis) {
   if (!axisEl) return;
   
   axisEl.innerHTML = "";
@@ -1500,9 +1537,9 @@ BYDModuleComponent.prototype._renderAxis = function(axisEl, axis) {
   }
 };
 
-// Register Custom Element
+// Registriere Custom Element
 customElements.get("byd-battery-module") ||
-  customElements.define("byd-battery-module", BYDModuleComponent);
+  customElements.define("byd-battery-module", q);
 // ============================================================================
 // BYD BATTERY STAND COMPONENT
 // ============================================================================
@@ -1554,10 +1591,10 @@ var K = class extends HTMLElement {
 customElements.get("byd-battery-stand") ||
   customElements.define("byd-battery-stand", K);
 // ============================================================================
-// BYD BATTERY TOWER COMPONENT - OPTIMIZED
+// BYD BATTERY TOWER COMPONENT
 // ============================================================================
 
-var BYDTowerComponent = class extends HTMLElement {
+var G = class extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: "open" });
@@ -1642,149 +1679,149 @@ var BYDTowerComponent = class extends HTMLElement {
 // BYD BATTERY TOWER - DATA SETTERS
 // ============================================================================
 
-BYDTowerComponent.prototype.setVoltage = function(e) {
+G.prototype.setVoltage = function(e) {
   this._eachModuleData(e, (t, i) => t.setVoltage(i));
 };
 
-BYDTowerComponent.prototype.setHistoryMaxVoltage = function(e) {
+G.prototype.setHistoryMaxVoltage = function(e) {
   this._eachModuleData(e, (t, i) => t.setHistoryMaxVoltage(i));
 };
 
-BYDTowerComponent.prototype.setHistoryMinVoltage = function(e) {
+G.prototype.setHistoryMinVoltage = function(e) {
   this._eachModuleData(e, (t, i) => t.setHistoryMinVoltage(i));
 };
 
-BYDTowerComponent.prototype.setChartMaxVoltage = function(e) {
+G.prototype.setChartMaxVoltage = function(e) {
   this._chartV.max = Number(e) || this._chartV.max;
   this._moduleEls.forEach((t) => t.setChartMaxVoltage(this._chartV.max));
 };
 
-BYDTowerComponent.prototype.setChartMinVoltage = function(e) {
+G.prototype.setChartMinVoltage = function(e) {
   this._chartV.min = Number(e) || this._chartV.min;
   this._moduleEls.forEach((t) => t.setChartMinVoltage(this._chartV.min));
 };
 
-BYDTowerComponent.prototype.setTemperature = function(e) {
+G.prototype.setTemperature = function(e) {
   this._eachModuleData(e, (t, i) => t.setTemperature(i));
 };
 
-BYDTowerComponent.prototype.setChartMaxTemperature = function(e) {
+G.prototype.setChartMaxTemperature = function(e) {
   this._chartT.max = Number(e) || this._chartT.max;
   this._moduleEls.forEach((t) => t.setChartMaxTemperature(this._chartT.max));
 };
 
-BYDTowerComponent.prototype.setChartMinTemperature = function(e) {
+G.prototype.setChartMinTemperature = function(e) {
   this._chartT.min = Number(e) || this._chartT.min;
   this._moduleEls.forEach((t) => t.setChartMinTemperature(this._chartT.min));
 };
 
-BYDTowerComponent.prototype.setCellBallancing = function(e) {
+G.prototype.setCellBallancing = function(e) {
   this._eachModuleData(e, (t, i) => t.setCellBallancing(i));
 };
 
-BYDTowerComponent.prototype.setStateOfCharge = function(e) {
+G.prototype.setStateOfCharge = function(e) {
   this._header?.setStateOfCharge(e);
 };
 
-BYDTowerComponent.prototype.setStateOfHealth = function(e) {
+G.prototype.setStateOfHealth = function(e) {
   this._header?.setStateOfHealth(e);
 };
 
-BYDTowerComponent.prototype.setEfficiency = function(e) {};
+G.prototype.setEfficiency = function(e) {};
 
-BYDTowerComponent.prototype.setBMUPower = function(e) {
+G.prototype.setBMUPower = function(e) {
   this._header?.setBMUPower(e);
 };
 
-BYDTowerComponent.prototype.setBMUVersion = function(e) {
+G.prototype.setBMUVersion = function(e) {
   this._header?.setBMUVersion(e);
 };
 
-BYDTowerComponent.prototype.setBMSVersion = function(e) {
+G.prototype.setBMSVersion = function(e) {
   this._header?.setBMSVersion(e);
 };
 
-BYDTowerComponent.prototype.setUIMeta = function(e) {
+G.prototype.setUIMeta = function(e) {
   this._header?.setUIMeta?.(e);
 };
 
-BYDTowerComponent.prototype.setTowerCapacityWh = function(e) {
+G.prototype.setTowerCapacityWh = function(e) {
   this._header?.setTowerCapacityWh?.(e);
 };
 
-BYDTowerComponent.prototype.setEstimate = function(e) {
+G.prototype.setEstimate = function(e) {
   this._header?.setEstimate?.(e);
 };
 
-BYDTowerComponent.prototype.setProductName = function(e) {
+G.prototype.setProductName = function(e) {
   this._header?.setProductName?.(e);
 };
 
-BYDTowerComponent.prototype.setDisplayUnit = function(e) {
+G.prototype.setDisplayUnit = function(e) {
   this._displayUnit = e === "V" ? "V" : "mV";
   this._header?.setDisplayUnit?.(this._displayUnit);
   this._moduleEls.forEach((t) => t.setDisplayUnit?.(this._displayUnit));
 };
 
-BYDTowerComponent.prototype.setModuleView = function(e) {
+G.prototype.setModuleView = function(e) {
   this._moduleView = 
     e === "minimal" ? "minimal" : e === "none" ? "none" : "detailed";
   this._header?.setModuleView?.(this._moduleView);
   this._moduleEls.forEach((t) => t.setModuleView?.(this._moduleView));
 };
 
-BYDTowerComponent.prototype.getModuleView = function() {
+G.prototype.getModuleView = function() {
   return this._moduleView;
 };
 
-BYDTowerComponent.prototype.setHeaderInformation = function(e) {
+G.prototype.setHeaderInformation = function(e) {
   this._header?.setHeaderInformation?.(e);
 };
 
-BYDTowerComponent.prototype.setShowVTToggle = function(e) {
+G.prototype.setShowVTToggle = function(e) {
   this._header?.setShowVTToggle?.(e);
 };
 
-BYDTowerComponent.prototype.setShowViewToggle = function(e) {
+G.prototype.setShowViewToggle = function(e) {
   this._header?.setShowViewToggle?.(e);
 };
 
-BYDTowerComponent.prototype.showVoltage = function() {
+G.prototype.showVoltage = function() {
   this._view = "voltage";
   this._header?.setView?.("voltage");
   this._moduleEls.forEach((e) => e.showVoltage());
 };
 
-BYDTowerComponent.prototype.showTemperature = function() {
+G.prototype.showTemperature = function() {
   this._view = "temperature";
   this._header?.setView?.("temperature");
   this._moduleEls.forEach((e) => e.showTemperature());
 };
 
-BYDTowerComponent.prototype.getView = function() {
+G.prototype.getView = function() {
   return this._view;
 };
 
-BYDTowerComponent.prototype.showYAxisValues = function() {
+G.prototype.showYAxisValues = function() {
   this._moduleEls.forEach((e) => e.showYAxisValues());
 };
 
-BYDTowerComponent.prototype.hideYAxisValues = function() {
+G.prototype.hideYAxisValues = function() {
   this._moduleEls.forEach((e) => e.hideYAxisValues());
 };
 
-BYDTowerComponent.prototype.setShowGrayCaps = function(e) {
+G.prototype.setShowGrayCaps = function(e) {
   this._moduleEls.forEach((t) => t.setShowGrayCaps?.(e));
 };
 
-BYDTowerComponent.prototype.setHeaderDisplayOptions = function(e) {
+G.prototype.setHeaderDisplayOptions = function(e) {
   this._header?.setHeaderDisplayOptions?.(e);
 };
 // ============================================================================
 // BYD BATTERY TOWER - HELPER & RENDER
 // ============================================================================
 
-BYDTowerComponent.prototype._eachModuleData = function(e, t) {
+G.prototype._eachModuleData = function(e, t) {
   if (e && Array.isArray(e)) {
     if (e.length && typeof e[0] == "object" && !Array.isArray(e[0])) {
       // Array of objects with module indices
@@ -1804,7 +1841,7 @@ BYDTowerComponent.prototype._eachModuleData = function(e, t) {
   }
 };
 
-BYDTowerComponent.prototype._render = function() {
+G.prototype._render = function() {
   let e = this.shadowRoot;
   if (!e) return;
   
@@ -1855,14 +1892,14 @@ BYDTowerComponent.prototype._render = function() {
 };
 
 customElements.get("byd-battery-tower") ||
-  customElements.define("byd-battery-tower", BYDTowerComponent);
+  customElements.define("byd-battery-tower", G);
 // ============================================================================
 // BYD BATTERY SYSTEM COMPONENT
 // ============================================================================
-// BYD BATTERY SYSTEM COMPONENT - OPTIMIZED
-// ============================================================================
 
-var BYDSystemComponent = class extends HTMLElement {
+var ae = new URL("../styles/battery.css?v=0.0.6", import.meta.url);
+
+var X = class extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: "open" });
@@ -1969,14 +2006,14 @@ var BYDSystemComponent = class extends HTMLElement {
 };
 
 customElements.get("byd-battery-system") ||
-  customElements.define("byd-battery-system", BYDSystemComponent);
+  customElements.define("byd-battery-system", X);
 // ============================================================================
 // BYD BATTERY BOX VISUALIZATION CARD - MAIN COMPONENT
 // ============================================================================
 
 var Z = BYD_CONFIG.VERSION;
 
-var BYDBatteryCard = class extends HTMLElement {
+var L = class extends HTMLElement {
   static getConfigElement() {
     return document.createElement("byd-battery-box-visualization-editor");
   }
@@ -2075,7 +2112,7 @@ var BYDBatteryCard = class extends HTMLElement {
 // BYD BATTERY BOX CARD - POWER SAMPLING (OPTIMIERT)
 // ============================================================================
 
-BYDBatteryCard.prototype._pushPowerSample = function(e) {
+L.prototype._pushPowerSample = function(e) {
   if (!this._powerSamples) {
     this._powerSamples = [];
   }
@@ -2108,7 +2145,7 @@ BYDBatteryCard.prototype._pushPowerSample = function(e) {
   }
 };
 
-BYDBatteryCard.prototype._avgPowerW = function() {
+L.prototype._avgPowerW = function() {
   let e = this._powerSamples || [];
   if (e.length === 0) return 0;
   
@@ -2133,7 +2170,7 @@ BYDBatteryCard.prototype._avgPowerW = function() {
 // BYD BATTERY BOX CARD - RENDER LOGIC
 // ============================================================================
 
-BYDBatteryCard.prototype._render = function() {
+L.prototype._render = function() {
   if (!this._hass) return;
   
   let config = this._config || {};
@@ -2460,7 +2497,7 @@ BYDBatteryCard.prototype._render = function() {
 // BYD BATTERY BOX CARD - DISCOVERY METHODS (FORTSETZUNG)
 // ============================================================================
 
-BYDBatteryCard.prototype._discoverBMU = function() {
+L.prototype._discoverBMU = function() {
   let states = this._hass.states;
   let stateKeys = Object.keys(states);
   
@@ -2500,7 +2537,7 @@ BYDBatteryCard.prototype._discoverBMU = function() {
   return { power, version, totalCapacityWh, cellMaxV };
 };
 
-BYDBatteryCard.prototype._discoverTowers = function() {
+L.prototype._discoverTowers = function() {
   let result = [];
   let states = this._hass.states;
   let stateKeys = Object.keys(states);
@@ -2611,7 +2648,7 @@ BYDBatteryCard.prototype._discoverTowers = function() {
   return result.length === 0 ? [this._demoTower(1)] : result;
 };
 
-BYDBatteryCard.prototype._demoTower = function(e) {
+L.prototype._demoTower = function(e) {
   let voltage = Array.from({ length: 3 }, () =>
     Array.from(
       { length: 32 },
@@ -2656,7 +2693,7 @@ BYDBatteryCard.prototype._demoTower = function(e) {
 // BYD BATTERY BOX CARD - REGISTRY & PRODUCT NAMES
 // ============================================================================
 
-BYDBatteryCard.prototype._ensureRegistries = async function() {
+L.prototype._ensureRegistries = async function() {
   if (!(this._entities && this._devices)) {
     try {
       this._entities = await this._hass.callWS({
@@ -2670,7 +2707,7 @@ BYDBatteryCard.prototype._ensureRegistries = async function() {
   }
 };
 
-BYDBatteryCard.prototype._getModelForEntityId = function(entityId) {
+L.prototype._getModelForEntityId = function(entityId) {
   if (!entityId || !Array.isArray(this._entities) || !Array.isArray(this._devices)) {
     return "";
   }
@@ -2682,7 +2719,7 @@ BYDBatteryCard.prototype._getModelForEntityId = function(entityId) {
   return device?.model || device?.model_id || "";
 };
 
-BYDBatteryCard.prototype._applyProductNames = async function(towers, towerCount) {
+L.prototype._applyProductNames = async function(towers, towerCount) {
   try {
     await this._ensureRegistries();
     
@@ -2709,9 +2746,8 @@ BYDBatteryCard.prototype._applyProductNames = async function(towers, towerCount)
   } catch {}
 };
 
-// Register Custom Element for Main Card
 customElements.get("byd-battery-box-visualization") ||
-  customElements.define("byd-battery-box-visualization", BYDBatteryCard);
+  customElements.define("byd-battery-box-visualization", L);
 
 window.customCards = window.customCards || [];
 window.customCards.push({
@@ -2724,10 +2760,10 @@ window.customCards.push({
     "https://raw.githubusercontent.com/TimWeyand/byd_battery_box_visualization/main/images/preview.png",
 });
 // ============================================================================
-// BYD BATTERY CARD VISUALIZATION EDITOR - OPTIMIZED
+// BYD BATTERY BOX VISUALIZATION EDITOR
 // ============================================================================
 
-var BYDBatteryCardEditor = class extends HTMLElement {
+var j = class extends HTMLElement {
   constructor() {
     super();
     this._config = {};
@@ -2815,7 +2851,7 @@ var BYDBatteryCardEditor = class extends HTMLElement {
 // BYD BATTERY BOX VISUALIZATION EDITOR - RENDER WITH HA-FORM
 // ============================================================================
 
-BYDBatteryCardEditor.prototype._render = function() {
+j.prototype._render = function() {
   this.innerHTML = "";
   
   let configEditor = this;
@@ -3070,7 +3106,7 @@ BYDBatteryCardEditor.prototype._render = function() {
 // BYD BATTERY BOX VISUALIZATION EDITOR - FALLBACK RENDERING
 // ============================================================================
 
-BYDBatteryCardEditor.prototype._renderFallback = function() {
+j.prototype._renderFallback = function() {
   let container = document.createElement("div");
   container.style.display = "grid";
   container.style.gridTemplateColumns = "1fr 1fr";
@@ -3239,7 +3275,7 @@ BYDBatteryCardEditor.prototype._renderFallback = function() {
 };
 
 customElements.get("byd-battery-box-visualization-editor") ||
-  customElements.define("byd-battery-box-visualization-editor", BYDBatteryCardEditor);
+  customElements.define("byd-battery-box-visualization-editor", j);
 // ============================================================================
 // GLOBAL CSS & CUSTOM CARDS REGISTRATION
 // ============================================================================
